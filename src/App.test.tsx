@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from '@/App'
 import { AuthProvider } from '@/features/auth/AuthProvider'
@@ -8,12 +9,15 @@ import { login } from '@/services/api/authApi'
 import { setStoredToken } from '@/features/auth/session'
 
 function renderApp(initialEntries: string[]) {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <MemoryRouter initialEntries={initialEntries}>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={initialEntries}>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </MemoryRouter>
+    </QueryClientProvider>,
   )
 }
 
