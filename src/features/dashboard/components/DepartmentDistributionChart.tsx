@@ -1,4 +1,15 @@
-import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  Rectangle,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  type BarShapeProps,
+} from 'recharts'
 import { Card, Empty, Skeleton, Typography } from 'antd'
 import type { DepartmentDistributionPoint } from '@/services/api/dashboardApi'
 import { CATEGORICAL_PALETTE, CHART_INK } from '@/features/dashboard/palette'
@@ -42,11 +53,18 @@ export function DepartmentDistributionChart({ data, loading }: DepartmentDistrib
               labelFormatter={(_, payload) => payload?.[0]?.payload?.name ?? ''}
               contentStyle={{ borderRadius: 8, borderColor: CHART_INK.gridline }}
             />
-            <Bar dataKey="studentCount" name="Students" radius={[4, 4, 0, 0]} maxBarSize={40}>
+            <Bar
+              dataKey="studentCount"
+              name="Students"
+              radius={[4, 4, 0, 0]}
+              maxBarSize={40}
+              shape={(props: BarShapeProps) => {
+                const { index, ...rest } = props
+                const fill = CATEGORICAL_PALETTE[(index ?? 0) % CATEGORICAL_PALETTE.length]
+                return <Rectangle {...rest} fill={fill} />
+              }}
+            >
               <LabelList dataKey="studentCount" position="top" style={{ fill: CHART_INK.secondary, fontSize: 12 }} />
-              {data.map((entry, index) => (
-                <Cell key={entry.departmentId} fill={CATEGORICAL_PALETTE[index % CATEGORICAL_PALETTE.length]} />
-              ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
