@@ -1,17 +1,27 @@
-import { Flex, Typography } from 'antd'
+import { Button, Flex, Typography } from 'antd'
+import { LoginPage } from '@/features/auth/LoginPage'
+import { useAuth } from '@/features/auth/useAuth'
 
 /**
- * Temporary placeholder — replaced by the router/admin shell in a
- * follow-up commit. Exists so the foundation (theming, providers,
- * tooling) can be verified end-to-end on its own.
+ * Temporary — replaced by the full router/admin shell in a follow-up
+ * commit. Shows the login page when signed out, and a minimal
+ * placeholder (rather than a blank screen) once authenticated, so this
+ * commit is reviewable end-to-end on its own.
  */
 function App() {
+  const { status, user, logout } = useAuth()
+
+  if (status !== 'authenticated') {
+    return <LoginPage />
+  }
+
   return (
-    <Flex vertical align="center" justify="center" style={{ minHeight: '100vh' }} gap={8}>
-      <Typography.Title level={2} style={{ margin: 0 }}>
-        CampusOne
+    <Flex vertical align="center" justify="center" gap={12} style={{ minHeight: '100vh' }}>
+      <Typography.Title level={3} style={{ margin: 0 }}>
+        Signed in as {user?.name} ({user?.role})
       </Typography.Title>
-      <Typography.Text type="secondary">Foundation ready.</Typography.Text>
+      <Typography.Text type="secondary">Admin shell and routing land in the next commit.</Typography.Text>
+      <Button onClick={() => void logout()}>Sign out</Button>
     </Flex>
   )
 }

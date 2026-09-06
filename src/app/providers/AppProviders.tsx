@@ -1,11 +1,21 @@
 import { useState, type PropsWithChildren } from 'react'
 import { App as AntApp, ConfigProvider } from 'antd'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
 import { themeConfig } from '@/app/theme'
+import { ApiError } from '@/types/common'
+import { notifySessionExpired } from '@/services/authEvents'
+import { AuthProvider } from '@/features/auth/AuthProvider'
 
 function createQueryClient() {
   return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        if (error instanceof ApiError && error.status === 401) {
+          notifySessionExpired()
+        }
+      },
+    }),
     defaultOptions: {
       queries: {
         retry: 1,
@@ -26,7 +36,9 @@ export function AppProviders({ children }: PropsWithChildren) {
     <ConfigProvider theme={themeConfig}>
       <AntApp>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>{children}</BrowserRouter>
+          <BrowserRouter>
+            <AuthProvider>{children}</AuthProvider>
+          </BrowserRouter>
         </QueryClientProvider>
       </AntApp>
     </ConfigProvider>
