@@ -14,3 +14,14 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
     dispatchEvent: () => false,
   })
 }
+
+// jsdom doesn't implement ResizeObserver; used by Ant Design components
+// like Dropdown/Menu that measure their content (via rc-resize-observer).
+if (typeof window !== 'undefined' && !window.ResizeObserver) {
+  class ResizeObserverStub {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  window.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver
+}
