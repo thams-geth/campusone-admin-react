@@ -4,10 +4,12 @@
 
 A multi-tenant SaaS college management platform ("CampusOne"). Not a single college's admin tool — any college can sign up as a tenant, and features are enabled per tenant like installing integrations (Datadog-style module toggles).
 
+**Two separate repos, not a monorepo:** this repo (`campusone-admin`) is the frontend; the API lives in a sibling repo, `campusone-api`. They're paired over HTTP/CORS with no shared package — types are duplicated by hand on each side for now.
+
 ## Tech stack (decided)
 
 - **Frontend:** React + TypeScript + Vite, Ant Design, TanStack Query, React Router, React Hook Form + Zod, Recharts/ECharts
-- **Backend:** NestJS + TypeScript
+- **Backend:** Express + TypeScript (separate repo: `campusone-api`)
 - **ORM/DB:** Prisma + PostgreSQL
 - **Payments:** Razorpay or Cashfree (native UPI support — non-negotiable for India)
 - **Notifications:** WhatsApp Business API + SMS/email fallback (e.g. Gupshup)
@@ -17,7 +19,7 @@ A multi-tenant SaaS college management platform ("CampusOne"). Not a single coll
 
 - Start **pooled**: one Postgres database, one schema, every table carries a `tenant_id` (or `college_id`) column.
 - Enforce tenant isolation with **Postgres Row-Level Security**, not just app-level `WHERE` clauses. RLS is the last line of defense — app code should never be the only thing standing between tenants.
-- **Prisma specifics:** middleware (`$use`) is removed in Prisma 7. Use a **Prisma Client Extension** that sets `app.current_tenant` via `SET_CONFIG` at the start of each request, combined with an RLS policy on every table. Carry `tenant_id` through the NestJS request lifecycle with `AsyncLocalStorage`, not as a parameter threaded through every function — that's how it gets forgotten.
+- **Prisma specifics:** middleware (`$use`) is removed in Prisma 7. Use a **Prisma Client Extension** that sets `app.current_tenant` via `SET_CONFIG` at the start of each request, combined with an RLS policy on every table. Carry `tenant_id` through the Express request lifecycle with `AsyncLocalStorage` (set in middleware right after auth, read by the Prisma extension), not as a parameter threaded through every function — that's how it gets forgotten.
 - Migration path for large customers later: schema-per-tenant, then dedicated DB per tenant — don't build these now, just don't make pooled-only assumptions that block the upgrade.
 - Never let a query reach business logic without a resolved `tenant_id` in context.
 
