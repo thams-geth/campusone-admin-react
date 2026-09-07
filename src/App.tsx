@@ -4,6 +4,8 @@ import { RequireAuth, RequireRole } from '@/features/auth/RouteGuards'
 import { AdminLayout } from '@/app/layouts/AdminLayout'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { StudentsPage } from '@/features/students/StudentsPage'
+import { StudentFormPage } from '@/features/students/StudentFormPage'
+import { StudentDetailsPage } from '@/features/students/StudentDetailsPage'
 import { DepartmentsPage } from '@/features/departments/DepartmentsPage'
 import { NotFoundPage } from '@/components/common/NotFoundPage'
 
@@ -20,7 +22,12 @@ function App() {
         }
       >
         <Route index element={<DashboardPage />} />
-        <Route path="students/*" element={<StudentsPage />} />
+        <Route path="students">
+          <Route index element={<StudentsPage />} />
+          <Route path="new" element={<StudentFormPage />} />
+          <Route path=":id" element={<StudentDetailsPage />} />
+          <Route path=":id/edit" element={<StudentFormPage />} />
+        </Route>
         <Route
           path="departments/*"
           element={
