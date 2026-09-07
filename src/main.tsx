@@ -3,12 +3,15 @@ import { createRoot } from 'react-dom/client'
 import 'antd/dist/reset.css'
 import './index.css'
 import { AppProviders } from '@/app/providers/AppProviders'
+import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AppProviders>
-      <App />
-    </AppProviders>
+    <ErrorBoundary>
+      <AppProviders>
+        <App />
+      </AppProviders>
+    </ErrorBoundary>
   </StrictMode>,
 )

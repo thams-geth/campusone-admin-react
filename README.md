@@ -45,6 +45,11 @@ npm run test:watch  # run tests in watch mode
 ## Security notes (mock-data phase)
 
 - Session token is kept in `sessionStorage`, not `localStorage`, to limit exposure if an XSS bug ever slips through — cleared when the tab closes. **Production must replace this with a backend-issued httpOnly, secure, SameSite cookie**; the client should never be the sole holder of a long-lived credential.
-- The CSP in `index.html` is a defense-in-depth fallback. In production it must be set as a real `Content-Security-Policy` HTTP response header at the server/CDN.
+- The CSP in `index.html` is a defense-in-depth fallback. In production it must be set as a real `Content-Security-Policy` HTTP response header at the server/CDN (a `<meta>` CSP can't set `frame-ancestors`, and could be stripped by anything able to inject markup).
 - Route access is guarded by both authentication and role (RBAC), matching the "role inside tenant" model in `CLAUDE.md` — never just "has this role" globally.
 - All forms validate with Zod on the client; **this is a UX convenience, not a security boundary** — the real backend must re-validate everything server-side once it exists.
+- Login lockout after repeated failures is implemented client-side for demo UX only — real throttling (per-account and per-IP) must live server-side, since an attacker controls their own client.
+- `robots.txt` and a `noindex` meta tag keep the admin console out of search results; it is not a substitute for authentication.
+- A top-level `ErrorBoundary` (`src/components/common/ErrorBoundary.tsx`) catches render-time crashes so a bug in one page shows a "something went wrong" screen instead of silently blanking the whole app.
+- Routes are code-split with `React.lazy` per CLAUDE.md's module model — a tenant's browser only downloads the JS for pages it visits, not the whole app upfront.
+- `npm audit` is clean as of this writing; re-run it before shipping, and again whenever dependencies change.
