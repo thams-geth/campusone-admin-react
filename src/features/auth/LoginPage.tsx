@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Alert, Button, Card, Flex, Form, Input, Typography } from 'antd'
 import { LockOutlined, MailOutlined } from '@ant-design/icons'
 import { useAuth } from '@/features/auth/useAuth'
@@ -48,23 +48,52 @@ export function LoginPage() {
     <Flex style={{ minHeight: '100vh' }}>
       <Flex
         vertical
-        justify="center"
+        justify="space-between"
         flex={1}
         style={{
           display: 'none',
-          background: 'linear-gradient(135deg, #4338ca 0%, #312e81 100%)',
+          background:
+            'radial-gradient(600px 380px at 15% 10%, rgba(255,255,255,0.14), transparent 60%), radial-gradient(500px 400px at 100% 100%, rgba(124,58,237,0.55), transparent 60%), linear-gradient(155deg, #4F46E5 0%, #372F87 60%, #201B4D 100%)',
           color: '#fff',
-          padding: '64px',
+          padding: 56,
         }}
         className="login-brand-panel"
       >
-        <Typography.Title level={1} style={{ color: '#fff', marginBottom: 16 }}>
-          CampusOne
-        </Typography.Title>
-        <Typography.Paragraph style={{ color: 'rgba(255,255,255,0.85)', fontSize: 16, maxWidth: 420 }}>
-          One platform for every college — admissions, academics, fees, and more, enabled the
-          moment you need them.
-        </Typography.Paragraph>
+        <Flex align="center" gap={10}>
+          <span style={{ width: 11, height: 11, borderRadius: 4, background: '#fff' }} />
+          <Typography.Text strong style={{ color: '#fff', fontSize: 19 }}>
+            CampusOne
+          </Typography.Text>
+        </Flex>
+
+        <div style={{ maxWidth: 380 }}>
+          <Typography.Title level={2} style={{ color: '#fff', marginBottom: 14 }}>
+            Every college, one operating system.
+          </Typography.Title>
+          <Typography.Paragraph style={{ color: 'rgba(255,255,255,0.78)', fontSize: 14.5, maxWidth: 340 }}>
+            Admissions to alumni — attendance, fees, timetable and exams running on one
+            tenant-isolated platform.
+          </Typography.Paragraph>
+
+          <Flex gap={28} style={{ marginTop: 28 }}>
+            <div>
+              <Typography.Text strong style={{ color: '#fff', fontSize: 22, display: 'block' }}>
+                38
+              </Typography.Text>
+              <Typography.Text style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11.5, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Modules
+              </Typography.Text>
+            </div>
+            <div>
+              <Typography.Text strong style={{ color: '#fff', fontSize: 22, display: 'block' }}>
+                10
+              </Typography.Text>
+              <Typography.Text style={{ color: 'rgba(255,255,255,0.65)', fontSize: 11.5, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Roles
+              </Typography.Text>
+            </div>
+          </Flex>
+        </div>
       </Flex>
 
       <style>{`
@@ -80,7 +109,7 @@ export function LoginPage() {
           </Typography.Title>
           <Typography.Text type="secondary">Welcome back to your admin console.</Typography.Text>
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate style={{ marginTop: 24 }}>
+          <Form layout="vertical" onFinish={() => handleSubmit(onSubmit)()} noValidate style={{ marginTop: 24 }}>
             {formError && (
               <Alert
                 type="error"
@@ -116,6 +145,7 @@ export function LoginPage() {
               label="Password"
               validateStatus={errors.password ? 'error' : ''}
               help={errors.password?.message}
+              style={{ marginBottom: 8 }}
             >
               <Controller
                 name="password"
@@ -132,10 +162,14 @@ export function LoginPage() {
               />
             </Form.Item>
 
+            <div style={{ textAlign: 'right', marginBottom: 16 }}>
+              <Link to="/forgot-password">Forgot password?</Link>
+            </div>
+
             <Button type="primary" htmlType="submit" size="large" loading={isSubmitting} block>
               Sign in
             </Button>
-          </form>
+          </Form>
 
           <div style={{ marginTop: 16 }}>
             <DemoCredentials

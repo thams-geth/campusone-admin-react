@@ -7,35 +7,38 @@ import type { ThemeConfig } from 'antd'
  */
 export const themeConfig: ThemeConfig = {
   token: {
-    colorPrimary: '#4338ca',
-    colorInfo: '#4338ca',
-    colorLink: '#4338ca',
-    colorSuccess: '#15803d',
-    colorWarning: '#b45309',
-    colorError: '#b91c1c',
-    borderRadius: 8,
-    fontFamily:
-      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    colorPrimary: '#4F46E5',
+    colorInfo: '#4F46E5',
+    colorLink: '#4F46E5',
+    colorSuccess: '#16A34A',
+    colorWarning: '#D97706',
+    colorError: '#DC2626',
+    colorText: '#171331',
+    colorTextSecondary: '#6C6784',
+    colorBorder: '#E7E3F3',
+    colorBorderSecondary: '#F0EDF9',
+    borderRadius: 10,
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     fontSize: 14,
-    colorBgLayout: '#f5f6fa',
+    colorBgLayout: '#F6F5FC',
   },
   components: {
     Layout: {
       headerBg: '#ffffff',
-      siderBg: '#101127',
-      bodyBg: '#f5f6fa',
+      siderBg: '#171331',
+      bodyBg: '#F6F5FC',
     },
     Menu: {
-      darkItemBg: '#101127',
-      darkSubMenuItemBg: '#0b0c1e',
-      darkItemSelectedBg: '#4338ca',
+      darkItemBg: '#171331',
+      darkSubMenuItemBg: '#12102A',
+      darkItemSelectedBg: '#4F46E5',
       darkItemHoverBg: 'rgba(255, 255, 255, 0.06)',
     },
     Table: {
-      headerBg: '#fafafa',
+      headerBg: '#FAF9FD',
     },
     Card: {
-      borderRadiusLG: 12,
+      borderRadiusLG: 14,
     },
   },
 }

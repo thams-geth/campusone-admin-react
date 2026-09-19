@@ -16,12 +16,25 @@ export function StatCard({ title, value, icon, iconColor, loading, suffix }: Sta
       {loading ? (
         <Skeleton active paragraph={false} title={{ width: '60%' }} />
       ) : (
-        <Statistic
-          title={title}
-          value={value}
-          suffix={suffix}
-          prefix={<span style={{ color: iconColor, marginRight: 4 }}>{icon}</span>}
-        />
+        <>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 9,
+              background: `color-mix(in srgb, ${iconColor} 14%, white)`,
+              color: iconColor,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 15,
+              marginBottom: 12,
+            }}
+          >
+            {icon}
+          </div>
+          <Statistic title={title} value={value} suffix={suffix} />
+        </>
       )}
     </Card>
   )

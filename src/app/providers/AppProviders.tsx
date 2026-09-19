@@ -6,6 +6,7 @@ import { themeConfig } from '@/app/theme'
 import { ApiError } from '@/types/common'
 import { notifySessionExpired } from '@/services/authEvents'
 import { AuthProvider } from '@/features/auth/AuthProvider'
+import { ScrollManager } from '@/app/router/ScrollManager'
 
 function createQueryClient() {
   return new QueryClient({
@@ -37,6 +38,7 @@ export function AppProviders({ children }: PropsWithChildren) {
       <AntApp>
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
+            <ScrollManager />
             <AuthProvider>{children}</AuthProvider>
           </BrowserRouter>
         </QueryClientProvider>

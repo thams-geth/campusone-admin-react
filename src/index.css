@@ -10,15 +10,66 @@ body,
   height: 100%;
 }
 
+html,
+body {
+  /* Every page's own scrollable regions (tables, code blocks) handle their
+     content overflow internally — the page itself never scrolls sideways,
+     otherwise a phone viewport can drift the whole layout off-screen. */
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
+  background: #f6f5fc;
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+/* Lexend for headings (antd Typography.Title renders native h1–h5), Inter
+   stays the body/UI/data face — see src/app/theme.ts for the rest of the
+   palette these fonts pair with. */
+h1,
+h2,
+h3,
+h4,
+h5,
+.ant-typography h1,
+.ant-typography h2,
+.ant-typography h3,
+.ant-typography h4,
+.ant-typography h5 {
+  font-family: 'Lexend', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Numbers that line up in columns (Statistic, table amounts, time ranges)
+   should use tabular figures so digits don't visually jitter. */
+.ant-statistic-content,
+.ant-table-cell {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Every list page renders an antd <Table> at whatever natural width its
+   columns need; on a narrow viewport that's routinely wider than the
+   screen. Scrolling it inside its own wrapper (instead of letting it push
+   the page wide) is a single global fix that applies to all ~45 table
+   pages without touching each one. */
+.ant-table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Every create/edit form in the app is a fixed-width side Drawer (default
+   ~378px, none set a responsive width prop) — fine on desktop, but on a
+   phone narrower than that it must never exceed the viewport. */
+.ant-drawer-content-wrapper {
+  max-width: 100vw;
+}
+
 
 /* Ant Design already resets most element defaults via its own reset layer. */
 img,
