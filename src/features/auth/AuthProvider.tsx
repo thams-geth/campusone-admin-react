@@ -8,7 +8,7 @@ import {
   type LoginCredentials,
 } from '@/services/api/authApi'
 import { getCurrentTenant, getTenantModules } from '@/services/api/tenantApi'
-import { clearStoredToken, getStoredToken, setStoredToken } from '@/features/auth/session'
+import { getStoredToken } from '@/features/auth/session'
 import { registerSessionExpiredHandler } from '@/services/authEvents'
 import { AuthContext, initialAuthState, type AuthContextValue, type AuthState } from '@/features/auth/authContext'
 
@@ -27,11 +27,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
       setState((prev) => ({ ...prev, status: 'loading' }))
       try {
-        const user = await getCurrentUser(token)
+        const user = await getCurrentUser()
         const [tenant, modules] = await Promise.all([getCurrentTenant(), getTenantModules()])
         if (!cancelled) setState({ status: 'authenticated', user, tenant, modules })
       } catch {
-        clearStoredToken()
         if (!cancelled) setState({ ...initialAuthState, status: 'unauthenticated' })
       }
     }
@@ -43,13 +42,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [])
 
   const logout = useCallback(async () => {
-    const token = getStoredToken()
-    clearStoredToken()
     setState({ ...initialAuthState, status: 'unauthenticated' })
-    if (token) {
-      // Best-effort — the session is already cleared locally either way.
-      await apiLogout(token).catch(() => undefined)
-    }
+    // Best-effort — the session is already cleared locally either way.
+    await apiLogout().catch(() => undefined)
   }, [])
 
   useEffect(() => {
@@ -59,8 +54,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [logout])
 
   const login = useCallback(async (credentials: LoginCredentials) => {
-    const { user, token } = await apiLogin(credentials)
-    setStoredToken(token)
+    const { user } = await apiLogin(credentials)
     const [tenant, modules] = await Promise.all([getCurrentTenant(), getTenantModules()])
     setState({ status: 'authenticated', user, tenant, modules })
   }, [])

@@ -15,5 +15,10 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // The default 5s starts to get tight for userEvent-driven interaction
+    // tests (Popconfirm confirmations etc.) once the suite runs many test
+    // files in parallel workers — a real hang still fails loudly at 10s,
+    // this just gives CPU-contention headroom room to breathe.
+    testTimeout: 10_000,
   },
 })

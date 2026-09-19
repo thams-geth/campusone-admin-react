@@ -84,7 +84,7 @@ export function DepartmentFormDrawer({ open, onClose, department }: DepartmentFo
         </Space>
       }
     >
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <Form layout="vertical" onFinish={() => handleSubmit(onSubmit)()} noValidate>
         <Form.Item label="Name" validateStatus={errors.name ? 'error' : ''} help={errors.name?.message}>
           <Controller
             name="name"
@@ -140,7 +140,7 @@ export function DepartmentFormDrawer({ open, onClose, department }: DepartmentFo
             )}
           />
         </Form.Item>
-      </form>
+      </Form>
     </Drawer>
   )
 }

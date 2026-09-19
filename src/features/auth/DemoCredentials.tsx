@@ -1,21 +1,13 @@
 import { Collapse, Space, Tag, Typography } from 'antd'
-import type { Role } from '@/types/user'
 
-const DEMO_ACCOUNTS: { role: Role; email: string }[] = [
-  { role: 'SUPER_ADMIN', email: 'super.admin@aurora.edu' },
-  { role: 'COLLEGE_ADMIN', email: 'college.admin@aurora.edu' },
-  { role: 'DEPARTMENT_ADMIN', email: 'dept.admin@aurora.edu' },
-  { role: 'FACULTY', email: 'faculty@aurora.edu' },
-  { role: 'STAFF', email: 'staff@aurora.edu' },
-]
-
+const DEMO_EMAIL = 'admin@demo-college.test'
 const DEMO_PASSWORD = 'Passw0rd!'
 
 interface DemoCredentialsProps {
   onSelect: (email: string, password: string) => void
 }
 
-/** Convenience for reviewers/testers — there is no real backend yet. */
+/** The one account campusone-api's `npm run prisma:seed` creates (SUPER_ADMIN on the demo tenant). */
 export function DemoCredentials({ onSelect }: DemoCredentialsProps) {
   return (
     <Collapse
@@ -27,21 +19,16 @@ export function DemoCredentials({ onSelect }: DemoCredentialsProps) {
           label: (
             <Space size={6}>
               <Tag color="purple">Demo</Tag>
-              <Typography.Text type="secondary">Use a sample account</Typography.Text>
+              <Typography.Text type="secondary">Use the seeded demo account</Typography.Text>
             </Space>
           ),
           children: (
             <Space orientation="vertical" size={4} style={{ width: '100%' }}>
-              {DEMO_ACCOUNTS.map((account) => (
-                <Typography.Link
-                  key={account.email}
-                  onClick={() => onSelect(account.email, DEMO_PASSWORD)}
-                >
-                  {account.role.replace('_', ' ')} — {account.email}
-                </Typography.Link>
-              ))}
+              <Typography.Link onClick={() => onSelect(DEMO_EMAIL, DEMO_PASSWORD)}>
+                SUPER ADMIN — {DEMO_EMAIL}
+              </Typography.Link>
               <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                Password for all demo accounts: {DEMO_PASSWORD}
+                Password: {DEMO_PASSWORD}. Seeded by `npm run prisma:seed` in campusone-api.
               </Typography.Text>
             </Space>
           ),

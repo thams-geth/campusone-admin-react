@@ -14,6 +14,7 @@ import {
   getRecentActivity,
 } from '@/services/api/dashboardApi'
 import { StatCard } from '@/features/dashboard/components/StatCard'
+import { NavCardGrid } from '@/features/dashboard/components/NavCardGrid'
 import { EnrollmentTrendChart } from '@/features/dashboard/components/EnrollmentTrendChart'
 import { DepartmentDistributionChart } from '@/features/dashboard/components/DepartmentDistributionChart'
 import { RecentActivityList } from '@/features/dashboard/components/RecentActivityList'
@@ -93,6 +94,11 @@ export function DashboardPage() {
           />
         </Col>
       </Row>
+
+      <Typography.Title level={5} style={{ marginBottom: 12 }}>
+        Explore
+      </Typography.Title>
+      <NavCardGrid />
 
       <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
         <Col xs={24} lg={14}>

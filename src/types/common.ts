@@ -17,16 +17,19 @@ export interface PaginationParams {
   sortOrder?: 'ascend' | 'descend'
 }
 
-/** Shape of errors thrown by the service layer, mock or real. */
+/** Shape of errors thrown by the service layer, mirroring the API's ApiError/Zod error responses. */
 export class ApiError extends Error {
   readonly status: number
   readonly code: string
+  /** Zod's `{ field: [messages] }` map, present on 422 VALIDATION_ERROR responses. */
+  readonly details?: Record<string, string[] | undefined>
 
-  constructor(message: string, status = 400, code = 'BAD_REQUEST') {
+  constructor(message: string, status = 400, code = 'BAD_REQUEST', details?: Record<string, string[] | undefined>) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     this.code = code
+    this.details = details
   }
 }
 

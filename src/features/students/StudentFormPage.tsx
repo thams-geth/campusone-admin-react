@@ -103,14 +103,14 @@ export function StudentFormPage() {
       </Typography.Title>
 
       <Card style={{ maxWidth: 720 }}>
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Form layout="vertical" onFinish={() => handleSubmit(onSubmit)()} noValidate>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="First name" htmlFor="firstName" validateStatus={errors.firstName ? 'error' : ''} help={errors.firstName?.message}>
                 <Controller name="firstName" control={control} render={({ field }) => <Input id="firstName" {...field} />} />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Last name" htmlFor="lastName" validateStatus={errors.lastName ? 'error' : ''} help={errors.lastName?.message}>
                 <Controller name="lastName" control={control} render={({ field }) => <Input id="lastName" {...field} />} />
               </Form.Item>
@@ -118,12 +118,12 @@ export function StudentFormPage() {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Email" htmlFor="email" validateStatus={errors.email ? 'error' : ''} help={errors.email?.message}>
                 <Controller name="email" control={control} render={({ field }) => <Input id="email" {...field} type="email" />} />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Phone" htmlFor="phone" validateStatus={errors.phone ? 'error' : ''} help={errors.phone?.message}>
                 <Controller name="phone" control={control} render={({ field }) => <Input id="phone" {...field} placeholder="+91 9000000000" />} />
               </Form.Item>
@@ -131,7 +131,7 @@ export function StudentFormPage() {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label="Roll number"
                 htmlFor="rollNumber"
@@ -141,7 +141,7 @@ export function StudentFormPage() {
                 <Controller name="rollNumber" control={control} render={({ field }) => <Input id="rollNumber" {...field} />} />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label="Department"
                 htmlFor="departmentId"
@@ -166,7 +166,7 @@ export function StudentFormPage() {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Gender" htmlFor="gender" validateStatus={errors.gender ? 'error' : ''} help={errors.gender?.message}>
                 <Controller
                   name="gender"
@@ -185,7 +185,7 @@ export function StudentFormPage() {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Status" htmlFor="status">
                 <Controller
                   name="status"
@@ -207,7 +207,7 @@ export function StudentFormPage() {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label="Date of birth"
                 htmlFor="dateOfBirth"
@@ -229,7 +229,7 @@ export function StudentFormPage() {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label="Admission date"
                 htmlFor="admissionDate"
@@ -254,12 +254,12 @@ export function StudentFormPage() {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Guardian name" htmlFor="guardianName">
                 <Controller name="guardianName" control={control} render={({ field }) => <Input id="guardianName" {...field} />} />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 label="Guardian phone"
                 htmlFor="guardianPhone"
@@ -281,7 +281,7 @@ export function StudentFormPage() {
             </Button>
             <Button onClick={() => navigate(-1)}>Cancel</Button>
           </Space>
-        </form>
+        </Form>
       </Card>
     </div>
   )

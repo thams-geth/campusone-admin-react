@@ -1,20 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { App } from 'antd'
-import { ApiError } from '@/types/common'
+import { errorMessage } from '@/utils/errorMessage'
 import type { StudentInput } from '@/types/student'
 import {
   createStudent,
   deleteStudent,
   getStudent,
+  getStudent360,
   listStudents,
   updateStudent,
   type ListStudentsParams,
 } from '@/services/api/studentsApi'
 import { listDepartments } from '@/services/api/departmentsApi'
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof ApiError ? error.message : fallback
-}
 
 export function useStudentsQuery(params: ListStudentsParams) {
   return useQuery({
@@ -28,6 +25,15 @@ export function useStudentQuery(id: string | undefined) {
   return useQuery({
     queryKey: ['students', 'detail', id],
     queryFn: () => getStudent(id!),
+    enabled: !!id,
+  })
+}
+
+/** The cross-module 360 aggregation — an independent query, not a dependency of `useStudentQuery`. */
+export function useStudent360Query(id: string | undefined) {
+  return useQuery({
+    queryKey: ['students', 'detail', id, '360'],
+    queryFn: () => getStudent360(id!),
     enabled: !!id,
   })
 }

@@ -99,7 +99,7 @@ export function StudentsPage() {
 
   return (
     <div>
-      <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
+      <Flex justify="space-between" align="center" gap={12} wrap style={{ marginBottom: 16 }}>
         <Typography.Title level={3} style={{ margin: 0 }}>
           Students
         </Typography.Title>

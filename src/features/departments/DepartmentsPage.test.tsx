@@ -2,9 +2,10 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App as AntApp } from 'antd'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DepartmentsPage } from '@/features/departments/DepartmentsPage'
 import { createDepartment } from '@/services/api/departmentsApi'
+import { installMockFetch, mockFetch, resetMockFetch, type MockFetchResult } from '@/test/mockFetch'
 
 function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -16,6 +17,100 @@ function renderPage() {
     </QueryClientProvider>,
   )
 }
+
+interface WireDepartment {
+  id: string
+  tenantId: string
+  name: string
+  code: string
+  headOfDepartment?: string
+  description?: string
+  status: string
+  studentCount: number
+  facultyCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+let departments: WireDepartment[]
+let nextId: number
+
+function seedDepartment(overrides: Partial<WireDepartment>): WireDepartment {
+  return {
+    id: `dept-${nextId++}`,
+    tenantId: 'tenant-1',
+    name: 'Department',
+    code: 'DEPT',
+    status: 'ACTIVE',
+    studentCount: 0,
+    facultyCount: 0,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  }
+}
+
+function setupBackend() {
+  nextId = 1
+  departments = [
+    seedDepartment({
+      id: 'dept-cse',
+      name: 'Computer Science & Engineering',
+      code: 'CSE',
+      headOfDepartment: 'Dr. Asha Rao',
+      studentCount: 3,
+    }),
+    seedDepartment({ id: 'dept-civil', name: 'Civil Engineering', code: 'CIVIL', studentCount: 0 }),
+  ]
+
+  mockFetch.get('/departments', ({ query }): MockFetchResult => {
+    const search = query.get('search')?.toLowerCase()
+    const data = search
+      ? departments.filter(
+          (d) =>
+            d.name.toLowerCase().includes(search) ||
+            d.code.toLowerCase().includes(search) ||
+            (d.headOfDepartment ?? '').toLowerCase().includes(search),
+        )
+      : departments
+    return { body: { data, meta: { page: 1, pageSize: 10, total: data.length, totalPages: 1 } } }
+  })
+
+  mockFetch.post('/departments', ({ body }): MockFetchResult => {
+    const input = body as Record<string, unknown>
+    if (departments.some((d) => d.code === input.code)) {
+      return { status: 409, body: { message: 'Department code already in use.', code: 'DUPLICATE_CODE' } }
+    }
+    const created = seedDepartment({
+      name: input.name as string,
+      code: input.code as string,
+      headOfDepartment: input.headOfDepartment as string | undefined,
+      description: input.description as string | undefined,
+      status: (input.status as string) ?? 'ACTIVE',
+    })
+    departments.push(created)
+    return { status: 201, body: created }
+  })
+
+  mockFetch.delete('/departments/:id', ({ params }): MockFetchResult => {
+    const dept = departments.find((d) => d.id === params.id)
+    if (dept && dept.studentCount > 0) {
+      return {
+        status: 409,
+        body: { message: 'Cannot delete a department with students assigned to it.', code: 'DEPARTMENT_IN_USE' },
+      }
+    }
+    departments = departments.filter((d) => d.id !== params.id)
+    return { status: 204 }
+  })
+}
+
+beforeEach(() => {
+  installMockFetch()
+  setupBackend()
+})
+
+afterEach(() => resetMockFetch())
 
 describe('DepartmentsPage', () => {
   it('lists the seeded departments', async () => {

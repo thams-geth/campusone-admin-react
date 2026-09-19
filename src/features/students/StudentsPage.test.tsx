@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { App as AntApp } from 'antd'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { StudentsPage } from '@/features/students/StudentsPage'
+import { installMockFetch, mockFetch, resetMockFetch } from '@/test/mockFetch'
 
 function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
@@ -23,6 +24,80 @@ function renderPage() {
     </QueryClientProvider>,
   )
 }
+
+const DEPARTMENT = {
+  id: 'dept-1',
+  tenantId: 'tenant-1',
+  name: 'Computer Science & Engineering',
+  code: 'CSE',
+  status: 'ACTIVE',
+  studentCount: 2,
+  facultyCount: 2,
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+}
+
+const STUDENTS = [
+  {
+    id: 'student-1',
+    tenantId: 'tenant-1',
+    firstName: 'Asha',
+    lastName: 'Verma',
+    email: 'asha.verma@demo-college.test',
+    phone: '+91 9000000001',
+    rollNumber: 'CSE-001',
+    departmentId: 'dept-1',
+    gender: 'FEMALE',
+    dateOfBirth: '2003-01-01T00:00:00.000Z',
+    admissionDate: '2023-06-01T00:00:00.000Z',
+    status: 'ACTIVE',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'student-2',
+    tenantId: 'tenant-1',
+    firstName: 'Rohan',
+    lastName: 'Gupta',
+    email: 'rohan.gupta@demo-college.test',
+    phone: '+91 9000000002',
+    rollNumber: 'CSE-002',
+    departmentId: 'dept-1',
+    gender: 'MALE',
+    dateOfBirth: '2003-02-02T00:00:00.000Z',
+    admissionDate: '2023-06-01T00:00:00.000Z',
+    status: 'ACTIVE',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
+]
+
+function setupBackend() {
+  mockFetch.get('/departments', { body: { data: [DEPARTMENT], meta: { page: 1, pageSize: 100, total: 1, totalPages: 1 } } })
+
+  mockFetch.get('/students', ({ query }) => {
+    let data = STUDENTS
+    const departmentId = query.get('departmentId')
+    if (departmentId) data = data.filter((s) => s.departmentId === departmentId)
+    const search = query.get('search')?.toLowerCase()
+    if (search) {
+      data = data.filter(
+        (s) =>
+          `${s.firstName} ${s.lastName}`.toLowerCase().includes(search) ||
+          s.email.toLowerCase().includes(search) ||
+          s.rollNumber.toLowerCase().includes(search),
+      )
+    }
+    return { body: { data, meta: { page: 1, pageSize: 10, total: data.length, totalPages: 1 } } }
+  })
+}
+
+beforeEach(() => {
+  installMockFetch()
+  setupBackend()
+})
+
+afterEach(() => resetMockFetch())
 
 describe('StudentsPage', () => {
   it('lists seeded students with a resolved department name', async () => {

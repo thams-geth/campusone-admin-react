@@ -8,9 +8,12 @@ export type Role =
   | 'SUPER_ADMIN'
   | 'COLLEGE_ADMIN'
   | 'DEPARTMENT_ADMIN'
+  | 'HOD'
+  | 'EXAM_ADMIN'
   | 'FACULTY'
   | 'STAFF'
   | 'STUDENT'
+  | 'PARENT'
 
 export interface AuthUser {
   id: string
@@ -20,4 +23,5 @@ export interface AuthUser {
   role: Role
   avatarUrl?: string
   isActive: boolean
+  mfaEnabled: boolean
 }

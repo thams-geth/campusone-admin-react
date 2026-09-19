@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { App } from 'antd'
-import { ApiError } from '@/types/common'
+import { errorMessage } from '@/utils/errorMessage'
 import type { DepartmentInput } from '@/types/department'
 import {
   createDepartment,
@@ -18,10 +18,6 @@ export function useDepartmentsQuery(params: ListDepartmentsParams) {
     queryFn: () => listDepartments(params),
     placeholderData: (previous) => previous,
   })
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof ApiError ? error.message : fallback
 }
 
 export function useCreateDepartment() {
